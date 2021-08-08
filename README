@@ -1,0 +1,42 @@
+**== 本项目未完善（此仓库用于备份） ==**
+
+
+注意：以下8个步骤可以用`mkimg.sh'来自动生成`sys.img'文件，不用按步骤操作。
+
+1.创建磁盘文件,`sys.img'，使用MINIX的文件系统：
+  touch sys.img && truncate --size=128M sys.img
+  fdisk sys.img
+  mkfs.minix sys.img
+2.系统中挂载`sys.img'，如下：
+  mount sys.img /mnt
+3.在`/mnt'下创建子目录，`bin',`dev',`proc',`tmp'命令如下：
+  mkdir /mnt/{bin,dev,proc,tmp}
+4.将`misc'目录下的`cat',`ed',`kill',`ls',`mkdir',`ps',`reboot',`rmdir',`sh',`wc'复制到`/mnt/bin'目录下：
+  cp misc/{cat,ed,kill,ls,mkdir,ps,reboot,rmdir,sh,wc} /mnt/bin
+5.在`/mnt/dev'目录下创建`console',`null',`zero'文件：
+  mknod /mnt/dev/console c 1 1
+  mknod /mnt/dev/null c 1 2
+  mknod /mnt/dev/zero c 1 3
+  mknod /mnt/dev/sda b 2 1
+  mknod /mnt/dev/sda1 b 2 2
+6.将`misc'目录下的`init'复制到`/mnt'目录下：
+  cp misc/init /mnt
+7.卸载`/mnt'下的目录：
+  umount /mnt
+8.使用QEMU虚拟机执行，命令如下：
+  qemu-system-i386 -kernel kernel.i386.elf -hda sys.img
+
+
+默认地址占用：
+0x00020000 - 内核栈区域
+0x00040000 - 内核级别页目录表
+0x00050000 - 内核级别页表
+0x00060000 - 用户级别页目录表
+0x00070000 - 用户级别页表
+0x000b8000 - 屏幕显示内存
+0x00100000 - 内核代码起始位置
+0x00200000 - 
+0x00300000 -
+0x00400000 - 用户程序加载位置
+0x00500000 -
+0x00600000 -
